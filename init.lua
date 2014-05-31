@@ -11,6 +11,7 @@ minetest.register_craft({
 
 minetest.register_node("fire:flame", {
 	description = "Non spreading Flame.",
+	inventory_image = "inv_flame.png",
 	drawtype = "plantlike",
 	tiles = {{
 		name="flame.png",
