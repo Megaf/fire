@@ -1,19 +1,17 @@
--- minetest/fire/init.lua
-
-minetest.register_node("fire:basic_flame", {
-	description = "Fire",
+minetest.register_node("fire:flame", {
+	description = "Non spreading Flame.",
 	drawtype = "plantlike",
 	tiles = {{
-		name="fire_basic_flame_animated.png",
+		name="flame.png",
 		animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1},
 	}},
-	inventory_image = "fire_basic_flame.png",
+	inventory_image = "inv_flame.png",
 	light_source = 14,
-	groups = {igniter=2,dig_immediate=3,hot=3},
-	drop = '',
+	groups = {dig_immediate=3,hot=3},
+	drop = 'default:coal_lump',
 	walkable = false,
 	buildable_to = true,
-	damage_per_second = 4,
+	damage_per_second = 1,
 	
 	after_place_node = function(pos, placer)
 		fire.on_flame_add_at(pos)
@@ -102,95 +100,3 @@ function fire.flame_should_extinguish(pos)
 	local ps = minetest.find_nodes_in_area(p0, p1, {"group:puts_out_fire"})
 	return (#ps ~= 0)
 end
-
---[[
-
--- Ignite neighboring nodes
-minetest.register_abm({
-	nodenames = {"group:flammable"},
-	neighbors = {"group:igniter"},
-	interval = 1,
-	chance = 2,
-	action = function(p0, node, _, _)
-		-- If there is water or stuff like that around flame, don't ignite
-		if fire.flame_should_extinguish(p0) then
-			return
-		end
-		local p = fire.find_pos_for_flame_around(p0)
-		if p then
-			minetest.set_node(p, {name="fire:basic_flame"})
-			fire.on_flame_add_at(p)
-		end
-	end,
-})
-
--- Rarely ignite things from far
-minetest.register_abm({
-	nodenames = {"group:igniter"},
-	neighbors = {"air"},
-	interval = 2,
-	chance = 10,
-	action = function(p0, node, _, _)
-		local reg = minetest.registered_nodes[node.name]
-		if not reg or not reg.groups.igniter or reg.groups.igniter < 2 then
-			return
-		end
-		local d = reg.groups.igniter
-		local p = minetest.find_node_near(p0, d, {"group:flammable"})
-		if p then
-			-- If there is water or stuff like that around flame, don't ignite
-			if fire.flame_should_extinguish(p) then
-				return
-			end
-			local p2 = fire.find_pos_for_flame_around(p)
-			if p2 then
-				minetest.set_node(p2, {name="fire:basic_flame"})
-				fire.on_flame_add_at(p2)
-			end
-		end
-	end,
-})
-
--- Remove flammable nodes and flame
-minetest.register_abm({
-	nodenames = {"fire:basic_flame"},
-	interval = 1,
-	chance = 2,
-	action = function(p0, node, _, _)
-		-- If there is water or stuff like that around flame, remove flame
-		if fire.flame_should_extinguish(p0) then
-			minetest.remove_node(p0)
-			fire.on_flame_remove_at(p0)
-			return
-		end
-		-- Make the following things rarer
-		if math.random(1,3) == 1 then
-			return
-		end
-		-- If there are no flammable nodes around flame, remove flame
-		if not minetest.find_node_near(p0, 1, {"group:flammable"}) then
-			minetest.remove_node(p0)
-			fire.on_flame_remove_at(p0)
-			return
-		end
-		if math.random(1,4) == 1 then
-			-- remove a flammable node around flame
-			local p = minetest.find_node_near(p0, 1, {"group:flammable"})
-			if p then
-				-- If there is water or stuff like that around flame, don't remove
-				if fire.flame_should_extinguish(p0) then
-					return
-				end
-				minetest.remove_node(p)
-				nodeupdate(p)
-			end
-		else
-			-- remove flame
-			minetest.remove_node(p0)
-			fire.on_flame_remove_at(p0)
-		end
-	end,
-})
-
-
-]]
