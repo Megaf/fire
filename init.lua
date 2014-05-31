@@ -1,3 +1,29 @@
+fire = {}
+
+minetest.register_craft({
+	output = 'fire:flame',
+	recipe = 	{
+			{'default:coal', 'default:coal'},
+			{'default:coal', 'default:coal'},
+			{'default:torch', 'default:torch'},
+		}
+})
+
+minetest.register_node("fire:flame", {
+	description = "Non spreading Flame.",
+	drawtype = "plantlike",
+	tiles = {{
+		name="flame.png",
+		animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1},
+	}},
+	groups = {cracky=3,hot=3},
+	drop = 'default:coal_lump',
+	walkable = false,
+	buildable_to = false,
+	damage_per_second = 1,
+})
+
+--[[
 minetest.register_node("fire:flame", {
 	description = "Non spreading Flame.",
 	drawtype = "plantlike",
@@ -100,3 +126,4 @@ function fire.flame_should_extinguish(pos)
 	local ps = minetest.find_nodes_in_area(p0, p1, {"group:puts_out_fire"})
 	return (#ps ~= 0)
 end
+]]
