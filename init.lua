@@ -3,9 +3,9 @@ fire = {}
 minetest.register_craft({
 	output = 'fire:flame',
 	recipe = 	{
-			{'default:coal', 'default:coal'},
-			{'default:coal', 'default:coal'},
-			{'default:torch', 'default:torch'},
+			{'default:coal_lump', 'default:coal_lump'},
+			{'default:coal_lump', 'default:coal_lump'},
+			{'default:torch',     'default:torch'},
 		}
 })
 
