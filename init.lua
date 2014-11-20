@@ -40,3 +40,4 @@ minetest.register_node("fire:basic_flame", {
 	buildable_to = false,
 	damage_per_second = 1,
 })
+print('[fire] loaded.')
